@@ -209,7 +209,7 @@ module WizardActsAsOrderedTree #:nodoc:
         #   (descendants follow)
         def orphan
           self[foreign_key_column] = 0
-          self.update
+          self.save
         end
 
         # orphans the node's children
@@ -307,6 +307,15 @@ module WizardActsAsOrderedTree #:nodoc:
           end
         end
 
+        def reorder_children
+          self.class.transaction do
+            children(true).each do |child|
+              new_position = children.index(child) + 1
+              child.update_attribute(order_column, new_position) if (child.position_in_list != new_position)
+            end
+          end
+        end
+
         private
           def find_root
             node = self
@@ -371,14 +380,14 @@ module WizardActsAsOrderedTree #:nodoc:
             end
           end
 
-          def reorder_children
-            self.class.transaction do
-              children(true).each do |child|
-                new_position = children.index(child) + 1
-                child.update_attribute(order_column, new_position) if (child.position_in_list != new_position)
-              end
-            end
-          end
+          #def reorder_children
+            #self.class.transaction do
+              #children(true).each do |child|
+                #new_position = children.index(child) + 1
+                #child.update_attribute(order_column, new_position) if (child.position_in_list != new_position)
+              #end
+            #end
+          #end
 
           def reorder_roots
             self.class.transaction do
