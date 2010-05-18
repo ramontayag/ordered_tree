@@ -58,7 +58,12 @@ module WizardActsAsOrderedTree #:nodoc:
                      :foreign_key   => configuration[:foreign_key],
                      :order         => configuration[:order]
 
-          cattr_reader :roots
+          named_scope :roots, lambda {
+            { 
+              :conditions => {configuration[:foreign_key] => 0},
+              :order => configuration[:order].to_s
+            }
+          }
 
           class_eval <<-EOV
             include WizardActsAsOrderedTree::Acts::OrderedTree::InstanceMethods
@@ -69,11 +74,6 @@ module WizardActsAsOrderedTree #:nodoc:
 
             def order_column
               :'#{configuration[:order]}'
-            end
-
-            def self.roots(reload = false)
-              reload = true if !@@roots
-              reload ? find(:all, :conditions => "#{configuration[:foreign_key]} = 0", :order => "#{configuration[:order]}") : @@roots
             end
 
             before_create  :add_to_list
