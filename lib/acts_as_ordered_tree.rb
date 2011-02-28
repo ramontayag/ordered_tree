@@ -81,11 +81,13 @@ module WizardActsAsOrderedTree #:nodoc:
             after_update   :reorder_old_list
             before_destroy :destroy_descendants
             after_destroy  :reorder_old_list
+            validate_on_update :check_parentage
           EOV
         end #acts_as_ordered_tree
       end #module AddActsAsMethod
 
       module InstanceMethods
+
         ## Tree Read Methods
 
         # returns an ordered array of all nodes without a parent
@@ -380,15 +382,6 @@ module WizardActsAsOrderedTree #:nodoc:
             end
           end
 
-          #def reorder_children
-            #self.class.transaction do
-              #children(true).each do |child|
-                #new_position = children.index(child) + 1
-                #child.update_attribute(order_column, new_position) if (child.position_in_list != new_position)
-              #end
-            #end
-          #end
-
           def reorder_roots
             self.class.transaction do
               self.class.roots(true).each do |root|
@@ -418,7 +411,7 @@ module WizardActsAsOrderedTree #:nodoc:
               end
             end
 
-            def validate_on_update #:nodoc:
+            def check_parentage #:nodoc:
               if !self_and_siblings(true).include?(self)
                 if self.parent == self
                   errors.add_to_base("cannot be a parent to itself.")
