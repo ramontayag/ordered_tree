@@ -58,7 +58,7 @@ module WizardActsAsOrderedTree #:nodoc:
                      :foreign_key   => configuration[:foreign_key],
                      :order         => configuration[:order]
 
-          named_scope :roots, lambda {
+          scope :roots, lambda {
             { 
               :conditions => {configuration[:foreign_key] => 0},
               :order => configuration[:order].to_s
@@ -81,7 +81,7 @@ module WizardActsAsOrderedTree #:nodoc:
             after_update   :reorder_old_list
             before_destroy :destroy_descendants
             after_destroy  :reorder_old_list
-            validate_on_update :check_parentage
+            validate :check_parentage, :on => :update
           EOV
         end #acts_as_ordered_tree
       end #module AddActsAsMethod
