@@ -15,10 +15,10 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "ordered_tree"
-  gem.homepage = "http://github.com/ramon.tayag/ordered_tree"
+  gem.homepage = "http://github.com/ramontayag/ordered_tree"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Gem version of Wizard's ActsAsTree}
+  gem.description = %Q{Uses parent_id and position to create an ordered tree.}
   gem.email = "ramon@tayag.net"
   gem.authors = ["Ramon Tayag"]
   # dependencies defined in Gemfile
