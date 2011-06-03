@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ordered_tree}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ramon Tayag"]
@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
     "lib/ordered_tree/instance_methods/list.rb",
     "lib/ordered_tree/instance_methods/misc.rb",
     "lib/ordered_tree/instance_methods/tree.rb",
+    "ordered_tree.gemspec",
     "spec/fixtures/person.rb",
     "spec/ordered_tree_spec.rb",
     "spec/spec_helper.rb"
