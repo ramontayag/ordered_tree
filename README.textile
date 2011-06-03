@@ -1,5 +1,8 @@
-= ActsAsOrderedTree
-  v.1.2
+h1. ActsAsOrderedTree
+
+v.1.2
+
+<pre>
                                  +----+-----------+----------+---------+
   node_1                         | id | parent_id | position | name    |
     \_ node_2                    +----+-----------+----------+---------+
@@ -26,38 +29,41 @@
     \_ node_17                   | 21 |        14 |        3 | Node_21 |
     \_ node_18                   | 22 |        14 |        4 | Node_22 |
                                  +----+-----------+----------+---------+
+</pre>
 
+<pre>
+class Person < ActiveRecord::Base
+  acts_as_ordered_tree :foreign_key => :parent_id,
+                       :order       => :position
+end
 
-  class Person < ActiveRecord::Base
-    acts_as_ordered_tree :foreign_key => :parent_id,
-                         :order       => :position
-  end
-
-  class CreatePeople < ActiveRecord::Migration
-    def self.up
-      create_table :people do |t|
-        t.column :parent_id ,:integer ,:null => false ,:default => 0
-        t.column :position  ,:integer
-      end
-      add_index(:people, :parent_id)
+class CreatePeople < ActiveRecord::Migration
+  def self.up
+    create_table :people do |t|
+      t.column :parent_id , :integer ,:null => false ,:default => 0
+      t.column :position  , :integer
     end
+    add_index(:people, :parent_id)
   end
+end
+</pre>
 
-  Which "in effect" sets up the following:
+Which "in effect" sets up the following:
 
-      belongs_to :parent,
-                 :class_name  => Person,
-                 :foreign_key => :parent_id
+<pre>
+belongs_to :parent,
+           :class_name  => Person,
+           :foreign_key => :parent_id
 
-      has_many   :children,
-                 :class_name  => Person,
-                 :foreign_key => :parent_id,
-                 :order       => :position
+has_many   :children,
+           :class_name  => Person,
+           :foreign_key => :parent_id,
+           :order       => :position
+</pre>
 
+h2. Overview
 
-
-= Overview
-
+<pre>
      Actions    Tree Methods                                List Method
  --------------------------------------------------------------------------------------------------
      Create
@@ -106,32 +112,12 @@
 
                 destroy_and_parent_adopts_children
 
-= Install
+</pre>
 
-  ./script/plugin install svn://rubyforge.org/var/svn/ordered-tree/acts_as_ordered_tree
+h2. Install
 
-  To test, run 'rake test:plugins', or 'rake' from the plugin's directory.
+gem 'ordered_tree'
 
-  There is a drag-n-drop demo located at svn://rubyforge.org/var/svn/ordered-tree/demo
+h2. Demo
 
-= License
-
-Copyright (c) 2006,2007 Brian D. Burns <wizard.rb@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+There is a drag-n-drop demo located at svn://rubyforge.org/var/svn/ordered-tree/demo
