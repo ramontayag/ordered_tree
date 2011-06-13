@@ -10,6 +10,13 @@ module OrderedTree
       def order_column
         :"#{ordered_tree_config[:order]}"
       end
+
+      private
+
+      # Overwrite this method to define the scope of the list changes
+      def scope_condition
+        "1"
+      end
     end
   end
 end

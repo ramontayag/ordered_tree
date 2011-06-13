@@ -1,12 +1,7 @@
 module OrderedTree
   module ClassMethods
     extend ActiveSupport::Concern
-
     included do
-      belongs_to :parent_node, :class_name => name, :foreign_key => ordered_tree_config[:foreign_key]
-      has_many :child_nodes, :class_name => name, :foreign_key => ordered_tree_config[:foreign_key], :order => ordered_tree_config[:order]
-      scope :roots, lambda { { :conditions => {ordered_tree_config[:foreign_key] => 0}, :order => ordered_tree_config[:order].to_s } }
-
       def foreign_key_column
         :"#{ordered_tree_config[:foreign_key]}"
       end

@@ -6,6 +6,37 @@ describe OrderedTree do
     @people = Person.all
   end
 
+  describe "when a scope is supplied" do
+    # This is especially important for working with root items that may belong to different accounts
+    it "should only work within that scope" do
+      # when the scope is an association
+      ordered_tree Page, :scope => :person do
+        Page.create(:person => @people[0]).position.should == 1
+        Page.create(:person => @people[2]).position.should == 1
+        Page.create(:person => @people[0]).position.should == 2
+        Page.create(:person => @people[1]).position.should == 1
+      end
+
+      # when the scope is an association id
+      ordered_tree Page, :scope => :person_id do
+        Page.create(:person => @people[0]).position.should == 3
+        Page.create(:person => @people[2]).position.should == 2
+        Page.create(:person => @people[0]).position.should == 4
+        Page.create(:person => @people[1]).position.should == 2
+      end
+
+      # when the scope_condition method is overridden
+      Page.class_eval do
+        def scope_condition
+          "person_id = #{person_id} AND name = '#{name}'"
+        end
+      end
+      Page.create(:person => @people[3], :name => "frankenstein").position.should == 1
+      Page.create(:person => @people[3], :name => "steiners").position.should == 1
+      Page.create(:person => @people[3], :name => "frankenstein").position.should == 2
+    end
+  end
+
   describe "when assigning parent" do
     it "should do a bunch of tests on validation" do
       # "should not allow an ancestor of a node to be a child of that node"

@@ -8,7 +8,8 @@ module OrderedTree
       #   return is cached
       #   use self_and_siblings(true) to force a reload
       def self_and_siblings(reload = false)
-        parent(reload) ? parent.children(reload) : self.class.roots(reload)
+        #parent(reload) ? parent.children(reload) : self.class.roots(scope_condition)
+        parent(reload) ? parent.children(reload) : self.class.roots(scope_condition)
       end
 
       # returns an array of the object's siblings, excluding itself
