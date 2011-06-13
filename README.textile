@@ -115,6 +115,45 @@ h2. Overview
                 destroy_and_parent_adopts_children
 </pre>
 
+h2. Setting the scope
+
+If you want to have multiple trees in the same database (let's say you want to have multiple sets of pages for the different tenants on your database), you should set a scope. A scope basically says: "work within this scope when possible".
+
+How does it work?
+
+Let's say I have a multi-tenant CMS app. I want each site to have their own Page tree. So Page uses @ordered_tree :scope => :site@ so that when I do this:
+
+pre. @site_1 = Site.create :name => "First site"
+@site_2 = Site.create :name => "Second site"
+Page.create(:site => @site_1).position # returns 1
+Page.create(:site => @site_2).position # returns 1
+Page.create(:site => @site_2).position # returns 2
+Page.create(:site => @site_1).position # returns 2
+
+Warning: @Page.roots@ will always return all the root pages (all pages with parent_id of 0). That's because there's no way to know which pages you want to see. That means, when you want to get a site's root pages, go through the site: @@site.pages.roots@
+
+Here are all the ways to define the scope:
+
+h3. Give a symbol without _id:
+
+@ordered_tree :scope => :site@
+
+@ordered_tree@ will add @_id@ to @:site@ so it becomes: @:site_id@
+
+Thus, you can also pass:
+
+h3. Give a symbol with _id
+
+@ordered_tree :scope => :site_id@
+
+h3. Override the scope_condition method
+
+For more complex stuff, in the model that has @ordered_tree@, define a method like this:
+
+pre. def scope_condition
+  "site_id = #{site_id} AND user_login = '#{user_login}'"
+end
+
 h2. Install
 
 gem 'ordered_tree'
