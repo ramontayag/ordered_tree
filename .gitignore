@@ -1,4 +1,4 @@
-*.swp
-**/*.swp
+*.sw*
+**/*.sw*
 test/*.log
 pkg

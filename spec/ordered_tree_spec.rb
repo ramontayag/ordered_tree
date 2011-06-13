@@ -31,9 +31,18 @@ describe OrderedTree do
           "person_id = #{person_id} AND name = '#{name}'"
         end
       end
-      Page.create(:person => @people[3], :name => "frankenstein").position.should == 1
-      Page.create(:person => @people[3], :name => "steiners").position.should == 1
-      Page.create(:person => @people[3], :name => "frankenstein").position.should == 2
+      page_1 = Page.create(:person => @people[3], :name => "frankenstein")
+      page_1.position.should == 1
+      page_2 = Page.create(:person => @people[3], :name => "steiners")
+      page_2.position.should == 1
+      page_3 = Page.create(:person => @people[3], :name => "frankenstein")
+      page_3.position.should == 2
+
+      # when moving a root to be a child of another
+      page_1.children << page_3
+      page_1.position.should == 1
+      page_2.position.should == 1
+      page_3.position.should == 1
     end
   end
 

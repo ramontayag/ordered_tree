@@ -15,7 +15,7 @@ module OrderedTree
 
       # Overwrite this method to define the scope of the list changes
       def scope_condition
-        "1 = 1"
+        "1"
       end
     end
   end

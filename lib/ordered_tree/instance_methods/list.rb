@@ -140,7 +140,7 @@ module OrderedTree
 
       def reorder_roots
         self.class.transaction do
-          self.class.roots(true).each do |root|
+          self.class.roots(scope_condition).each do |root|
             new_position = self.class.roots.index(root) + 1
             root.update_attribute(order_column, new_position) if (root.position_in_list != new_position)
           end

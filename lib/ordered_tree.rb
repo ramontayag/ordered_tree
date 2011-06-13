@@ -30,7 +30,7 @@ module OrderedTree #:nodoc:
     has_many :child_nodes, :class_name => self.name, :foreign_key => ordered_tree_config[:foreign_key], :order => ordered_tree_config[:order]
     scope :roots, lambda { |*args|
       scope_condition = args[0]
-      where(self.ordered_tree_config[:foreign_key].to_sym => 0).where(scope_condition).order(self.ordered_tree_config[:order])
+      where(scope_condition).where(self.ordered_tree_config[:foreign_key].to_sym => 0).order(self.ordered_tree_config[:order])
     }
 
     # If the scope is something like :person, then turn it into :person_id
@@ -40,7 +40,8 @@ module OrderedTree #:nodoc:
 
     if self.ordered_tree_config[:scope].is_a?(Symbol) # ie :person_id
       define_method "scope_condition" do
-        self.class.send(:sanitize_sql_hash_for_conditions, {self.class.ordered_tree_config[:scope].to_sym => send(self.class.ordered_tree_config[:scope].to_sym)})
+        hash = {self.class.ordered_tree_config[:scope].to_sym => send(self.class.ordered_tree_config[:scope].to_sym)}
+        self.class.send(:sanitize_sql_hash_for_conditions, hash)
       end
     end
 
