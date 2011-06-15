@@ -8,7 +8,6 @@ module OrderedTree
       #   return is cached
       #   use self_and_siblings(true) to force a reload
       def self_and_siblings(reload = false)
-        #parent(reload) ? parent.children(reload) : self.class.roots(scope_condition)
         parent(reload) ? parent.children(reload) : self.class.roots(scope_condition)
       end
 
@@ -141,7 +140,7 @@ module OrderedTree
       def reorder_roots
         self.class.transaction do
           self.class.roots(scope_condition).each do |root|
-            new_position = self.class.roots.index(root) + 1
+            new_position = self.class.roots(scope_condition).index(root) + 1
             root.update_attribute(order_column, new_position) if (root.position_in_list != new_position)
           end
         end

@@ -24,7 +24,9 @@ describe OrderedTree do
         Page.create(:person => @people[0]).position.should == 4
         Page.create(:person => @people[1]).position.should == 2
       end
+    end
 
+    it "should only work within that scope_condition overridden method" do
       # when the scope_condition method is overridden
       Page.class_eval do
         def scope_condition
@@ -37,12 +39,26 @@ describe OrderedTree do
       page_2.position.should == 1
       page_3 = Page.create(:person => @people[3], :name => "frankenstein")
       page_3.position.should == 2
+      page_4 = Page.create(:person => @people[3], :name => "frankenstein")
+      page_4.position.should == 3
+      page_5 = Page.create(:person => @people[4], :name => "frankenstein")
+      page_5.position.should == 1
 
       # when moving a root to be a child of another
       page_1.children << page_3
+
+      # reload all of them
+      [page_1, page_2, page_3, page_4, page_5].map(&:reload)
       page_1.position.should == 1
+      page_1.parent.should == nil
       page_2.position.should == 1
+      page_2.parent.should == nil
       page_3.position.should == 1
+      page_3.parent.should == page_1
+      page_4.position.should == 2
+      page_4.parent.should == nil
+      page_5.position.should == 1
+      page_5.parent.should == nil
     end
   end
 
