@@ -24,10 +24,18 @@ module OrderedTree #:nodoc:
     self.ordered_tree_config ||= {}
     self.ordered_tree_config[:foreign_key] ||= :parent_id
     self.ordered_tree_config[:order] ||= :position
+    self.ordered_tree_config[:primary_key] ||= :id
     self.ordered_tree_config.update(options) if options.is_a?(Hash)
 
-    belongs_to :parent_node, :class_name => self.name, :foreign_key => ordered_tree_config[:foreign_key]
-    has_many :child_nodes, :class_name => self.name, :foreign_key => ordered_tree_config[:foreign_key], :order => ordered_tree_config[:order]
+    belongs_to :parent_node,
+      :class_name => self.name,
+      :foreign_key => ordered_tree_config[:foreign_key],
+      :primary_key => ordered_tree_config[:primary_key]
+    has_many :child_nodes,
+      :class_name => self.name,
+      :foreign_key => ordered_tree_config[:foreign_key],
+      :primary_key => ordered_tree_config[:primary_key],
+      :order => ordered_tree_config[:order]
     scope :roots, lambda { |*args|
       scope_condition = args[0]
       where(scope_condition).where(self.ordered_tree_config[:foreign_key].to_sym => 0).order(self.ordered_tree_config[:order])

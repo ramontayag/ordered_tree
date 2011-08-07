@@ -6,6 +6,7 @@ require 'rspec'
 require 'ordered_tree'
 require 'spec/fixtures/person'
 require 'spec/fixtures/page'
+require 'spec/fixtures/category'
 
 #Allow to connect to SQLite
 ActiveRecord::Base.establish_connection(
@@ -21,7 +22,7 @@ RSpec.configure do |config|
 end
 
 def reset_database
-  %W(people pages).each do |table_name|
+  %W(people pages categories).each do |table_name|
     ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS '#{table_name}'")
   end
   ActiveRecord::Base.connection.create_table(:people) do |t|
@@ -36,6 +37,11 @@ def reset_database
     t.string :name
     t.integer :person_id
   end
+  ActiveRecord::Base.connection.create_table(:categories) do |t|
+    t.integer :parent_id, :null => false, :default => 0
+    t.integer :position
+    t.integer :alt_id
+  end
 end
 
 def ordered_tree(klass, *opts)
@@ -46,7 +52,7 @@ ensure
 end
 
 # Test Tree
-# 
+#
 # We will be working with this tree through out the tests
 #
 # people[0]
