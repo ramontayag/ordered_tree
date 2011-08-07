@@ -13,9 +13,17 @@ module OrderedTree
 
       private
 
-      # Overwrite this method to define the scope of the list changes
       def scope_condition
-        "1=1"
+        return @scope_condition if defined?(@scope_condition)
+        scope = self.class.ordered_tree_config[:scope]
+        # If the scope is something like :person, then turn it into :person_id
+        scope = :"#{scope}_id" if scope.is_a?(Symbol) && scope.to_s !~ /_id$/
+
+        @scope_condition = if scope
+          self.class.send(:sanitize_sql_hash_for_conditions, {scope => send(scope)})
+        else
+          "1=1"
+        end
       end
     end
   end
