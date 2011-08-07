@@ -6,6 +6,15 @@ describe OrderedTree do
     @people = Person.all
   end
 
+  describe "when a primary_key is supplied" do
+    it "should use the parent_id to point to the primary_key instead of :id" do
+      c1 = Category.create(:alt_id => 10)
+      c2 = Category.create(:parent_id => 10)
+      c2.parent.should == c1
+      c1.children.should include(c2)
+    end
+  end
+
   describe "when a scope is supplied" do
     # This is especially important for working with root items that may belong to different accounts
     it "should only work within that scope" do
@@ -59,6 +68,15 @@ describe OrderedTree do
       page_4.parent.should == nil
       page_5.position.should == 1
       page_5.parent.should == nil
+
+      # delete a root item
+      page_1.destroy
+
+      # reload all
+      [page_2, page_4, page_5].map(&:reload).each do |page|
+        page.position.should == 1
+        page.parent.should be_nil
+      end
     end
   end
 

@@ -154,6 +154,14 @@ pre. def scope_condition
   "site_id = #{site_id} AND user_login = '#{user_login}'"
 end
 
+h2. Making parent_id (the foreign key) point to something else
+
+If you want @parent_id@ to point to something else instead of the id, then supply @:primary_key => :alternate_id@ to the @ordered_tree@ method. This will only probably be useful in tandem with a scope:
+
+<pre>
+ordered_tree :primary_key => :relative_id, :scope => :account
+</pre>
+
 h2. Install
 
 gem 'ordered_tree'
