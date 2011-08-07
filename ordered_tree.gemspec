@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ordered_tree}
-  s.version = "0.1.7"
+  s.version = "0.1.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ramon Tayag"]
-  s.date = %q{2011-06-15}
+  s.date = %q{2011-08-07}
   s.description = %q{Uses parent_id and position to create an ordered tree.}
   s.email = %q{ramon@tayag.net}
   s.extra_rdoc_files = [
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
     "lib/ordered_tree/instance_methods/misc.rb",
     "lib/ordered_tree/instance_methods/tree.rb",
     "ordered_tree.gemspec",
+    "spec/fixtures/category.rb",
     "spec/fixtures/page.rb",
     "spec/fixtures/person.rb",
     "spec/ordered_tree_spec.rb",

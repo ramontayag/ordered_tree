@@ -41,6 +41,7 @@ def reset_database
     t.integer :parent_id, :null => false, :default => 0
     t.integer :position
     t.integer :alt_id
+    t.integer :person_id
   end
 end
 

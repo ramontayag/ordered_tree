@@ -30,28 +30,18 @@ module OrderedTree #:nodoc:
     belongs_to :parent_node,
       :class_name => self.name,
       :foreign_key => ordered_tree_config[:foreign_key],
-      :primary_key => ordered_tree_config[:primary_key]
+      :primary_key => ordered_tree_config[:primary_key],
+      :conditions => proc {scope_condition}
     has_many :child_nodes,
       :class_name => self.name,
       :foreign_key => ordered_tree_config[:foreign_key],
       :primary_key => ordered_tree_config[:primary_key],
+      :conditions => proc {scope_condition},
       :order => ordered_tree_config[:order]
     scope :roots, lambda { |*args|
       scope_condition = args[0]
       where(scope_condition).where(self.ordered_tree_config[:foreign_key].to_sym => 0).order(self.ordered_tree_config[:order])
     }
-
-    # If the scope is something like :person, then turn it into :person_id
-    if self.ordered_tree_config[:scope].is_a?(Symbol) && self.ordered_tree_config[:scope].to_s !~ /_id$/
-      self.ordered_tree_config[:scope] = "#{self.ordered_tree_config[:scope]}_id".intern
-    end
-
-    if self.ordered_tree_config[:scope].is_a?(Symbol) # ie :person_id
-      define_method "scope_condition" do
-        hash = {self.class.ordered_tree_config[:scope].to_sym => send(self.class.ordered_tree_config[:scope].to_sym)}
-        self.class.send(:sanitize_sql_hash_for_conditions, hash)
-      end
-    end
 
     include OrderedTree::ClassMethods
     include OrderedTree::InstanceMethods

@@ -8,10 +8,20 @@ describe OrderedTree do
 
   describe "when a primary_key is supplied" do
     it "should use the parent_id to point to the primary_key instead of :id" do
-      c1 = Category.create(:alt_id => 10)
-      c2 = Category.create(:parent_id => 10)
+      c1 = Category.create(:person_id => 1, :alt_id => 10)
+      c2 = Category.create(:person_id => 1, :parent_id => 10)
+      d1 = Category.create(:person_id => 2, :alt_id => 10)
+      d2 = Category.create(:person_id => 2, :parent_id => 10)
+
       c2.parent.should == c1
       c1.children.should include(c2)
+      d1.children.should_not include(c2)
+      c2.root.should == c1
+
+      d2.parent.should == d1
+      d1.children.should include(d2)
+      c1.children.should_not include(d2)
+      d2.root.should == d1
     end
   end
 
