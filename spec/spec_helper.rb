@@ -45,6 +45,12 @@ def reset_database
   end
 end
 
+# Using this doesn't seem to work when >= Rails 3.1
+# http://stackoverflow.com/q/7446358/61018
+#
+# I haven't found a real solution but will just make separate classes
+# to have different configurations, so we don't have to open
+# things up in the spec.
 def ordered_tree(klass, *opts)
   klass.ordered_tree *opts
   yield
