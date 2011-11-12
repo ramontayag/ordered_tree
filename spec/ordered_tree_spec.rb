@@ -110,6 +110,15 @@ describe OrderedTree do
       @people[0].reload
       @people[2].parent != @people[7]
     end
+
+    context "and a scope and primary key are supplied" do
+      it "should not allow assigning a parent as one of its descendants" do
+        c1 = Category.create(:person_id => 1, :alt_id => 10)
+        c1a = Category.create(:parent_id => 10, :person_id => 1, :alt_id => 30)
+        (c1a.children << c1).should be_false
+        c1.errors[:base].should include("is an ancestor of the new parent.")
+      end
+    end
   end
 
   describe "when validate :on => :update is called," do
@@ -165,7 +174,7 @@ describe OrderedTree do
     end
 
     it "should return all people with parent_id of nil" do
-      person = Person.create
+      page = Page.create
       Person.roots.should include(person)
     end
   end

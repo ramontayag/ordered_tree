@@ -38,7 +38,7 @@ def reset_database
     t.integer :person_id
   end
   ActiveRecord::Base.connection.create_table(:categories) do |t|
-    t.integer :parent_id, :null => false, :default => 0
+    t.integer :parent_id
     t.integer :position
     t.integer :alt_id
     t.integer :person_id
