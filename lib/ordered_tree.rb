@@ -28,16 +28,16 @@ module OrderedTree #:nodoc:
     self.ordered_tree_config.update(options) if options.is_a?(Hash)
 
     belongs_to :parent_node,
-      :class_name => self.name,
+      :class_name  => self.name,
       :foreign_key => ordered_tree_config[:foreign_key],
       :primary_key => ordered_tree_config[:primary_key],
-      :conditions => proc {scope_condition}
+      :conditions  => proc {scope_condition}
     has_many :child_nodes,
-      :class_name => self.name,
+      :class_name  => self.name,
       :foreign_key => ordered_tree_config[:foreign_key],
       :primary_key => ordered_tree_config[:primary_key],
-      :conditions => proc {scope_condition},
-      :order => ordered_tree_config[:order]
+      :conditions  => proc {scope_condition},
+      :order       => ordered_tree_config[:order]
     scope :roots, lambda { |*args|
       column = "#{self.table_name}.#{self.ordered_tree_config[:foreign_key].to_sym}"
       scope_condition = args[0]
