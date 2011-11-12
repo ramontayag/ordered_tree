@@ -174,8 +174,8 @@ describe OrderedTree do
     end
 
     it "should return all people with parent_id of nil" do
-      page = Page.create
-      Person.roots.should include(person)
+      page = Page.create :person => @people[0]
+      Page.roots.should include(page)
     end
   end
 
