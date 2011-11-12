@@ -39,8 +39,11 @@ module OrderedTree #:nodoc:
       :conditions => proc {scope_condition},
       :order => ordered_tree_config[:order]
     scope :roots, lambda { |*args|
+      column = "#{self.table_name}.#{self.ordered_tree_config[:foreign_key].to_sym}"
       scope_condition = args[0]
-      where(scope_condition).where(self.ordered_tree_config[:foreign_key].to_sym => 0).order(self.ordered_tree_config[:order])
+      where(scope_condition).
+        where("#{column} = 0 OR #{column} IS NULL").
+        order(self.ordered_tree_config[:order])
     }
 
     include OrderedTree::ClassMethods

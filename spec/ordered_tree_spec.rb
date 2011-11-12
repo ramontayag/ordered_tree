@@ -160,8 +160,13 @@ describe OrderedTree do
   end
 
   describe "class#roots" do
-    it "should return all the roots" do
+    it "should return all people with parent_id of 0" do
       Person.roots.should == [@people[0], @people[11]]
+    end
+
+    it "should return all people with parent_id of nil" do
+      person = Person.create
+      Person.roots.should include(person)
     end
   end
 

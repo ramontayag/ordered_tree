@@ -4,9 +4,9 @@ require 'rubygems'
 require 'active_record'
 require 'rspec'
 require 'ordered_tree'
-require 'spec/fixtures/person'
-require 'spec/fixtures/page'
-require 'spec/fixtures/category'
+require 'fixtures/person'
+require 'fixtures/page'
+require 'fixtures/category'
 
 #Allow to connect to SQLite
 ActiveRecord::Base.establish_connection(
@@ -32,7 +32,7 @@ def reset_database
     #add_index :people, [:parent_id], :name => "index_people_on_parent_id"
   end
   ActiveRecord::Base.connection.create_table(:pages) do |t|
-    t.integer :parent_id, :null => false, :default => 0
+    t.integer :parent_id
     t.integer :position
     t.string :name
     t.integer :person_id
