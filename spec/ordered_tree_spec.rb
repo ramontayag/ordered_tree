@@ -29,20 +29,30 @@ describe OrderedTree do
     # This is especially important for working with root items that may belong to different accounts
     it "should only work within that scope" do
       # when the scope is an association
-      ordered_tree Page, :scope => :person do
-        Page.create(:person => @people[0]).position.should == 1
-        Page.create(:person => @people[2]).position.should == 1
-        Page.create(:person => @people[0]).position.should == 2
-        Page.create(:person => @people[1]).position.should == 1
+      Object.send :remove_const, 'Page'
+      class Page < ActiveRecord::Base
+        belongs_to :person
+        ordered_tree :scope => :person
       end
 
+      Page.create(:person => @people[0]).position.should == 1
+      Page.create(:person => @people[2]).position.should == 1
+      Page.create(:person => @people[0]).position.should == 2
+      Page.create(:person => @people[1]).position.should == 1
+
       # when the scope is an association id
-      ordered_tree Page, :scope => :person_id do
-        Page.create(:person => @people[0]).position.should == 3
-        Page.create(:person => @people[2]).position.should == 2
-        Page.create(:person => @people[0]).position.should == 4
-        Page.create(:person => @people[1]).position.should == 2
+      Object.send :remove_const, 'Page'
+      class Page < ActiveRecord::Base
+        belongs_to :person
+        ordered_tree :scope => :person_id
       end
+      Page.create(:person => @people[0]).position.should == 3
+      Page.create(:person => @people[2]).position.should == 2
+      Page.create(:person => @people[0]).position.should == 4
+      Page.create(:person => @people[1]).position.should == 2
+
+      Object.send :remove_const, 'Page'
+      load 'fixtures/page.rb'
     end
 
     it "should only work within that scope_condition overridden method" do
@@ -73,7 +83,7 @@ describe OrderedTree do
       page_2.position.should == 1
       page_2.parent.should == nil
       page_3.position.should == 1
-      page_3.parent.should == page_1
+      page_3.parent.id.should == page_1.id
       page_4.position.should == 2
       page_4.parent.should == nil
       page_5.position.should == 1
@@ -109,6 +119,15 @@ describe OrderedTree do
       @people[2].reload
       @people[0].reload
       @people[2].parent != @people[7]
+    end
+
+    context "and a scope and primary key are supplied" do
+      it "should not allow assigning a parent as one of its descendants" do
+        c1 = Category.create(:person_id => 1, :alt_id => 10)
+        c1a = Category.create(:parent_id => 10, :person_id => 1, :alt_id => 30)
+        (c1a.children << c1).should be_false
+        c1.errors[:base].should include("is an ancestor of the new parent.")
+      end
     end
   end
 
@@ -160,8 +179,13 @@ describe OrderedTree do
   end
 
   describe "class#roots" do
-    it "should return all the roots" do
+    it "should return all people with parent_id of 0" do
       Person.roots.should == [@people[0], @people[11]]
+    end
+
+    it "should return all people with parent_id of nil" do
+      page = Page.create :person => @people[0]
+      Page.roots.should include(page)
     end
   end
 

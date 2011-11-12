@@ -1,1 +1,1 @@
-rvm @ordered_tree
+rvm use ruby-1.9.2-p290@ordered_tree

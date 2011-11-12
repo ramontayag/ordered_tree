@@ -4,9 +4,9 @@ require 'rubygems'
 require 'active_record'
 require 'rspec'
 require 'ordered_tree'
-require 'spec/fixtures/person'
-require 'spec/fixtures/page'
-require 'spec/fixtures/category'
+require 'fixtures/person'
+require 'fixtures/page'
+require 'fixtures/category'
 
 #Allow to connect to SQLite
 ActiveRecord::Base.establish_connection(
@@ -32,19 +32,25 @@ def reset_database
     #add_index :people, [:parent_id], :name => "index_people_on_parent_id"
   end
   ActiveRecord::Base.connection.create_table(:pages) do |t|
-    t.integer :parent_id, :null => false, :default => 0
+    t.integer :parent_id
     t.integer :position
     t.string :name
     t.integer :person_id
   end
   ActiveRecord::Base.connection.create_table(:categories) do |t|
-    t.integer :parent_id, :null => false, :default => 0
+    t.integer :parent_id
     t.integer :position
     t.integer :alt_id
     t.integer :person_id
   end
 end
 
+# Using this doesn't seem to work when >= Rails 3.1
+# http://stackoverflow.com/q/7446358/61018
+#
+# I haven't found a real solution but will just make separate classes
+# to have different configurations, so we don't have to open
+# things up in the spec.
 def ordered_tree(klass, *opts)
   klass.ordered_tree *opts
   yield
