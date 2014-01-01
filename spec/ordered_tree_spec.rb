@@ -190,6 +190,7 @@ describe OrderedTree do
   end
 
   it "should reorder the list when stuff are destroyed" do
+    people_count = @people.count
     @people[0].descendants.should == [@people[1],@people[2],@people[3],@people[4],@people[7],@people[8],@people[9],@people[10],@people[5],@people[6]]
     @people[5].self_and_siblings.should == [@people[1],@people[2],@people[5],@people[6]]
     @people[5].position_in_list.should == 3
@@ -197,7 +198,7 @@ describe OrderedTree do
     @people[10].children << @people[2]
     @people[2].parent.should == @people[10]
     @people[2].destroy.should_not be_nil
-    Person.count.should == @people.count - 7
+    Person.count.should == people_count - 7
     # Note that I don't need to reload self_and_siblings or children in this case,
     # since the re-ordering action is actually happening against people[0].children
     # (which is what self_and_syblings returns)
@@ -254,9 +255,9 @@ describe OrderedTree do
 
   describe "#move_to_bottom" do
     it "should do properly set the position_in_list" do
-      @people = Person.find(:all)
+      @people = Person.all
       (@people[4].move_to_bottom).should_not be_false
-      @people = Person.find(:all)
+      @people = Person.all
       @people[3].position_in_list.should == 1
       @people[9].position_in_list.should == 2
       @people[10].position_in_list.should == 3
