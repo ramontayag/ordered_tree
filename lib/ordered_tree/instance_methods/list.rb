@@ -116,9 +116,10 @@ module OrderedTree
           # moving from lower to higher, increment all in between
           # #{order_column} >= #{new_position} AND #{order_column} < #{position_in_list}
           self.class.transaction do
-            self.class.update_all(
-              "#{order_column} = (#{order_column} + 1)", "#{scope} AND (#{order_column} BETWEEN #{new_position} AND #{position_in_list - 1})"
-            )
+            self.class.#where(order_column => order_column + 1).
+              where(scope).
+              where("#{order_column} BETWEEN #{new_position} AND #{position_in_list - 1}").
+              update_all("#{order_column} = (#{order_column} + 1)")
             if on_create
               self[order_column] = new_position
             else
@@ -129,9 +130,9 @@ module OrderedTree
           # moving from higher to lower, decrement all in between
           # #{order_column} > #{position_in_list} AND #{order_column} <= #{new_position}
           self.class.transaction do
-            self.class.update_all(
-              "#{order_column} = (#{order_column} - 1)", "#{scope} AND (#{order_column} BETWEEN #{position_in_list + 1} AND #{new_position})"
-            )
+            self.class.where(scope).
+              where("#{order_column} BETWEEN #{position_in_list + 1} AND #{new_position}").
+              update_all("#{order_column} = (#{order_column} - 1)")
             update_attribute(order_column, new_position)
           end
         end
