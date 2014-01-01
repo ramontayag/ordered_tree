@@ -1,8 +1,10 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
-gem "activerecord", ">= 3.1.1"
+gemspec
 
-group :development do
-  gem "rspec"
-  gem 'sqlite3'
-end
+gem "activerecord"
+gem "activesupport"
+gem "rspec"
+
+# TODO Upgrade when fixed: http://stackoverflow.com/a/20128697/61018
+gem "pry", "0.9.12.2"

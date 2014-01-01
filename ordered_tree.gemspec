@@ -1,3 +1,4 @@
+$: << File.join(File.dirname(__FILE__), "lib")
 require "ordered_tree/version"
 
 Gem::Specification.new do |s|
@@ -18,7 +19,8 @@ Gem::Specification.new do |s|
 
   s.email = %q{ramon@tayag.net}
 
-  s.add_runtime_dependency(%q<activerecord>, [">= 3.1.1"])
+  s.add_runtime_dependency(%q<activerecord>, [">= 4.0"])
+  s.add_development_dependency(%q<activesupport>, [">= 4.0"])
   s.add_development_dependency(%q<rspec>, ["~> 2.6.0"])
   s.add_development_dependency(%q<sqlite3>, [">= 0"])
 end

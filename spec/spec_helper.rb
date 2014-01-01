@@ -1,48 +1,21 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'rubygems'
-require 'active_record'
-require 'rspec'
+LIB_DIR = File.join(File.dirname(__FILE__), '..', 'lib')
+SPEC_DIR = File.dirname(__FILE__)
+$LOAD_PATH.unshift(LIB_DIR)
+$LOAD_PATH.unshift(SPEC_DIR)
+
+# require "bundler/setup"
+# Bundler.require(:default, :development, :test)
+require "active_support"
+require "active_record"
+require "sqlite3"
+require "rspec"
+require "pry"
+
 require 'ordered_tree'
-require 'fixtures/person'
-require 'fixtures/page'
-require 'fixtures/category'
 
-#Allow to connect to SQLite
-ActiveRecord::Base.establish_connection(
-  :adapter => "sqlite3",
-  :database => ":memory:"
-)
-
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+Dir["#{SPEC_DIR}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
-end
-
-def reset_database
-  %W(people pages categories).each do |table_name|
-    ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS '#{table_name}'")
-  end
-  ActiveRecord::Base.connection.create_table(:people) do |t|
-    t.integer :parent_id, :null => false, :default => 0
-    t.integer :position
-    t.string :name
-    #add_index :people, [:parent_id], :name => "index_people_on_parent_id"
-  end
-  ActiveRecord::Base.connection.create_table(:pages) do |t|
-    t.integer :parent_id
-    t.integer :position
-    t.string :name
-    t.integer :person_id
-  end
-  ActiveRecord::Base.connection.create_table(:categories) do |t|
-    t.integer :parent_id
-    t.integer :position
-    t.integer :alt_id
-    t.integer :person_id
-  end
 end
 
 # Using this doesn't seem to work when >= Rails 3.1
@@ -52,7 +25,7 @@ end
 # to have different configurations, so we don't have to open
 # things up in the spec.
 def ordered_tree(klass, *opts)
-  klass.ordered_tree *opts
+  klass.ordered_tree(*opts)
   yield
 ensure
   klass.ordered_tree
@@ -124,11 +97,11 @@ def reload_test_tree
     if n == -1
       i = i.next
       people << Person.create(:name => "Person_#{i}")
-      else
-        2.times do
-          i = i.next
-          people << people[n].children.create(:name => "Person_#{i}")
-        end
+    else
+      2.times do
+        i = i.next
+        people << people[n].children.create(:name => "Person_#{i}")
       end
     end
   end
+end
